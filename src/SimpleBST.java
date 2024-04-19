@@ -63,8 +63,31 @@ public class SimpleBST<K,V> implements SimpleMap<K,V> {
 
   @Override
   public V set(K key, V value) {
-    return null;        // STUB
+    root = setHelper(key, value, root);
+    return this.cachedValue;
   } // set(K,V)
+
+  public BSTNode<K,V> setHelper(K key, V value, BSTNode<K,V> node) {
+    if (node == null){
+      this.cachedValue = null;
+      this.size++;
+      return new BSTNode<K,V>(key, value);
+    } else {
+      int compare = this.comparator.compare(key, node.key);
+      if(compare == 0){
+        this.cachedValue = node.value;
+        node.value = value;
+        return node;
+      } else if (compare < 0){
+        node.left = setHelper(key, value, node.left);
+        return node;
+      } else {
+        node.right = setHelper(key, value, node.right);
+        return node;
+      }
+    }
+  }
+
 
   @Override
   public V get(K key) {
@@ -76,17 +99,25 @@ public class SimpleBST<K,V> implements SimpleMap<K,V> {
 
   @Override
   public int size() {
-    return 0;           // STUB
+    return this.size;
   } // size()
 
   @Override
   public boolean containsKey(K key) {
-    return false;       // STUB
+    try {
+      this.get(key);
+    } catch (Exception e){
+      return false;
+    }
+    return true;
   } // containsKey(K)
 
   @Override
   public V remove(K key) {
-    return null;        // STUB
+    if (!this.containsKey(key)){
+      return null;
+    }
+    return null;
   } // remove(K)
 
   @Override
@@ -135,9 +166,20 @@ public class SimpleBST<K,V> implements SimpleMap<K,V> {
 
   @Override
   public void forEach(BiConsumer<? super K, ? super V> action) {
-    // STUB
+    forEachHelper(root, action);
   } // forEach
 
+  public void forEachHelper(BSTNode<K,V> node, BiConsumer<? super K, ? super V> action) {
+    if (node == null) {
+      return;
+    } else {
+      action.accept(node.key, node.value);
+    }
+    if ((node.left != null) || (node.right != null)) {
+      forEachHelper(node.left, action);
+      forEachHelper(node.right, action);
+    }
+  }
   // +----------------------+----------------------------------------
   // | Other public methods |
   // +----------------------+
