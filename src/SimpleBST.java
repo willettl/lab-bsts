@@ -210,6 +210,11 @@ public class SimpleBST<K,V> implements SimpleMap<K,V> {
         return null;
       } // next();
 
+      @Override
+      public void remove() {
+        throw new UnsupportedOperationException("No removing!");
+      } // remove()
+
       void checkInit() {
         if (!initialized) {
           stack.push(SimpleBST.this.root);
